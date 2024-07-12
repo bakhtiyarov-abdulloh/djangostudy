@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="django_study@localhost" uuid="6a5858d0-939f-43be-91a4-3581efdb756b">
+    <data-source source="LOCAL" name="django_study@localhost" uuid="d3454be9-93e2-4082-8e6f-8f51c6d2351e">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>

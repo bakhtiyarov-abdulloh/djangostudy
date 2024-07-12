@@ -363,7 +363,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        // if smartBack is enabled
 	        if (_this4.smartBackspace) {
-	          // the remaining part of the current string is equal of the same part of the new string
+	          // the remaining parts of the current string is equal of the same parts of the new string
 	          var nextString = _this4.strings[_this4.arrayPos + 1];
 	          if (nextString && curStringAtPosition === nextString.substr(0, curStrPos)) {
 	            _this4.stopNum = curStrPos;

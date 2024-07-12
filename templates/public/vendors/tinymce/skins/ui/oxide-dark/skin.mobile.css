@@ -410,7 +410,7 @@
   margin-top: 0.3em;
 }
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar.tinymce-mobile-context-toolbar .tinymce-mobile-toolbar-group .tinymce-mobile-slider.tinymce-mobile-hue-slider-container .tinymce-mobile-hue-slider-black {
-  /* Not part of theming */
+  /* Not parts of theming */
   background: black;
   height: 0.2em;
   margin-bottom: 0.3em;
@@ -418,7 +418,7 @@
   width: 1.2em;
 }
 .tinymce-mobile-toolstrip .tinymce-mobile-toolbar.tinymce-mobile-context-toolbar .tinymce-mobile-toolbar-group .tinymce-mobile-slider.tinymce-mobile-hue-slider-container .tinymce-mobile-hue-slider-white {
-  /* Not part of theming */
+  /* Not parts of theming */
   background: white;
   height: 0.2em;
   margin-bottom: 0.3em;

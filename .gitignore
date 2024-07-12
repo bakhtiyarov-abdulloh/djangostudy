@@ -1,0 +1,5 @@
+media
+.venv
+templates/public
+categories.json
+product.json

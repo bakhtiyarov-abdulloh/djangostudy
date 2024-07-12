@@ -5,7 +5,7 @@
  * For commercial licenses see https://www.tiny.cloud/
  */
 .tinymce-mobile-unfocused-selections .tinymce-mobile-unfocused-selection {
-  /* Note: this file is used inside the content, so isn't part of theming */
+  /* Note: this file is used inside the content, so isn't parts of theming */
   background-color: green;
   display: inline-block;
   opacity: 0.5;

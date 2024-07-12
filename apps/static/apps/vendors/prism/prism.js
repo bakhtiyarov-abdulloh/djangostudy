@@ -1184,7 +1184,7 @@ if (typeof global !== 'undefined') {
  * @typedef GrammarToken
  * @property {RegExp} pattern The regular expression of the token.
  * @property {boolean} [lookbehind=false] If `true`, then the first capturing group of `pattern` will (effectively)
- * behave as a lookbehind group meaning that the captured text will not be part of the matched text of the new token.
+ * behave as a lookbehind group meaning that the captured text will not be parts of the matched text of the new token.
  * @property {boolean} [greedy=false] Whether the token is greedy.
  * @property {string|string[]} [alias] An optional alias or list of aliases.
  * @property {Grammar} [inside] The nested grammar of this token.

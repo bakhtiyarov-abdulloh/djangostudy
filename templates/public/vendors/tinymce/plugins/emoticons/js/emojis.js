@@ -5760,7 +5760,7 @@ window.tinymce.Resource.add("tinymce.plugins.emoticons", {
     fitzpatrick_scale: false,
     category: "objects"
   },
-  shopping_cart: {
+  shopping-cart: {
     keywords: [ "trolley" ],
     char: "\ud83d\uded2",
     fitzpatrick_scale: false,

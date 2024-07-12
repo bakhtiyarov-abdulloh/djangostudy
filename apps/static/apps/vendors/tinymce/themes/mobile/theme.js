@@ -4697,7 +4697,7 @@
     };
     var convert$1 = function (adtConstructor, partSchema) {
       return function (spec) {
-        var data = asRawOrDie$1('Converting part type', partSchema, spec);
+        var data = asRawOrDie$1('Converting parts type', partSchema, spec);
         return adtConstructor(data);
       };
     };
@@ -4793,7 +4793,7 @@
       return component.getSystem().getByUid(uid).toOptional();
     };
     var getPartOrDie = function (component, detail, partKey) {
-      return getPart(component, detail, partKey).getOrDie('Could not find part: ' + partKey);
+      return getPart(component, detail, partKey).getOrDie('Could not find parts: ' + partKey);
     };
     var getAllParts = function (component, detail) {
       var system = component.getSystem();
@@ -7272,7 +7272,7 @@
                 return map$1(resPs, function (resPThunk, pName) {
                   return resPThunk().bind(function (v) {
                     var opt = Composing.getCurrent(v);
-                    return toResult(opt, new Error('Cannot find a current component to extract the value from for form part \'' + pName + '\': ' + element(v.element)));
+                    return toResult(opt, new Error('Cannot find a current component to extract the value from for form parts \'' + pName + '\': ' + element(v.element)));
                   }).map(Representing.getValue);
                 });
               },

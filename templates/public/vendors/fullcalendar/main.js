@@ -1030,7 +1030,7 @@ var FullCalendar = (function (exports) {
         if (stripZeroTime) {
             s = s.replace('T00:00:00Z', '');
         }
-        if (s.length > 10) { // time part wasn't stripped, can add timezone info
+        if (s.length > 10) { // time parts wasn't stripped, can add timezone info
             if (timeZoneOffset == null) {
                 s = s.replace('Z', '');
             }
@@ -1041,7 +1041,7 @@ var FullCalendar = (function (exports) {
         }
         return s;
     }
-    // formats the date, but with no time part
+    // formats the date, but with no time parts
     // TODO: somehow merge with buildIsoString and stripZeroTime
     // TODO: rename. omit "string"
     function formatDayString(marker) {
@@ -1435,7 +1435,7 @@ var FullCalendar = (function (exports) {
     function computePartialFormattingOptions(options, biggestUnit) {
         var partialOptions = {};
         for (var name_2 in options) {
-            if (!(name_2 in STANDARD_DATE_PROP_SEVERITIES) || // not a date part prop (like timeZone)
+            if (!(name_2 in STANDARD_DATE_PROP_SEVERITIES) || // not a date parts prop (like timeZone)
                 STANDARD_DATE_PROP_SEVERITIES[name_2] <= biggestUnit) {
                 partialOptions[name_2] = options[name_2];
             }
@@ -2168,7 +2168,7 @@ var FullCalendar = (function (exports) {
         if (timedRange.end) {
             endDay = startOfDay(timedRange.end);
             var endTimeMS = timedRange.end.valueOf() - endDay.valueOf(); // # of milliseconds into `endDay`
-            // If the end time is actually inclusively part of the next day and is equal to or
+            // If the end time is actually inclusively parts of the next day and is equal to or
             // beyond the next day threshold, adjust the end to be the exclusive end of `endDay`.
             // Otherwise, leaving it as inclusive will cause it to exclude `endDay`.
             if (endTimeMS && endTimeMS >= asRoughMs(nextDayThreshold)) {
@@ -3152,7 +3152,7 @@ var FullCalendar = (function (exports) {
                 eventSource = sourceInput.internalEventSource;
             }
             else if (typeof sourceInput === 'boolean') {
-                if (sourceInput) { // true. part of the first event source
+                if (sourceInput) { // true. parts of the first event source
                     eventSource = hashValuesToArray(state.eventSources)[0];
                 }
             }
@@ -4172,7 +4172,7 @@ var FullCalendar = (function (exports) {
     }
     function parseLocale(codeArg, codes, raw) {
         var merged = mergeProps([RAW_EN_LOCALE, raw], ['buttonText']);
-        delete merged.code; // don't want this part of the options
+        delete merged.code; // don't want this parts of the options
         var week = merged.week;
         delete merged.week;
         return {
@@ -8548,7 +8548,7 @@ var FullCalendar = (function (exports) {
     }());
     /*
     for incorporating slotMinTime/slotMaxTime if appropriate
-    TODO: should be part of DateProfile!
+    TODO: should be parts of DateProfile!
     TimelineDateProfile already does this btw
     */
     function computeActiveRange(dateProfile, isComponentAllDay) {

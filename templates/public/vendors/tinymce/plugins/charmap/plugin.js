@@ -1214,7 +1214,7 @@
             ],
             [
               8476,
-              'real part symbol'
+              'real parts symbol'
             ],
             [
               978,
@@ -1226,7 +1226,7 @@
             ],
             [
               8465,
-              'imaginary part'
+              'imaginary parts'
             ]
           ]
         },

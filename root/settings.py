@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps',
     'django_ckeditor_5',
+    'django_celery_results',
+    'django_celery_beat',
+
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,6 +75,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'root.wsgi.application'
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_RESTRICT_BY_USER = True
+AUTH_USER_MODEL = 'apps.User'
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -109,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tashkent'
 
 USE_I18N = True
 
@@ -120,6 +126,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR / 'static/')
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 
@@ -215,3 +222,21 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+
+
+from import_export.formats.base_formats import XLSX, CSV, JSON, YAML
+
+EXPORT_FORMATS = [XLSX, CSV, JSON, YAML]
+
+LOGIN_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'abdullohbaxtiyorov2004@gmail.com'
+EMAIL_HOST_PASSWORD = 'wzsa lnvm gzgh mqbv'
+
+
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_RESULT_BACKEND = 'django-db'
