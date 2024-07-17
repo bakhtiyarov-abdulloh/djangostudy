@@ -1,0 +1,39 @@
+{% extends 'apps/base.html' %}
+{% load static %}
+{% block content %}
+    <div class="card-body p-0">
+        <div class="row gx-card mx-0 bg-200 text-900 fs--1 fw-semi-bold">
+            <div class="col-9 col-md-8 py-2">Name</div>
+            <div class="col-3 col-md-4">
+                <div class="row">
+                    <div class="col-12 col-md-4 text-end py-2">Price</div>
+                </div>
+            </div>
+        </div>
+        {% for product in favourites %}
+            <div class="row gx-card mx-0 align-items-center border-bottom border-200">
+                <div class="col-8 py-3">
+                    <div class="d-flex align-items-center"><a
+                            href="{% url 'product_detail' product.product.pk %}"><img
+                            class="img-fluid rounded-1 me-3 d-none d-md-block"
+                            src="{{ product.product.images.first.image.url }}" alt=""
+                            width="60"/></a>
+                        <div class="flex-1">
+                            <h5 class="fs-0"><a class="text-900"
+                                                href="{% url 'product_detail' product.product.pk %}">{{ product.product.name }}</a></h5>
+                            <div class="fs--2 fs-md--1"><a class="text-danger" href="{% url 'remove_from_favorites' product.pk %}">Remove</a></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-end ps-0 order-0 order-md-1 mb-2 mb-md-0 text-600">${{ product.product.current_price }}</div>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+
+
+    </div>
+{% endblock %}

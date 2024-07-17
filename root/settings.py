@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_ckeditor_5',
     'django_celery_results',
     'django_celery_beat',
+    'mptt'
 
 ]
 

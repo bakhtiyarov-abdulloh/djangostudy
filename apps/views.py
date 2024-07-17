@@ -15,20 +15,21 @@ from apps.models import Product, Category, CartItem, Favorite, Address
 from apps.tasks import send_to_email
 
 
-# Create your views here.
-class ProductListView(ListView):
-    queryset = Product.objects.order_by('-created_at')
-    template_name = 'apps/product/product-list.html'
-    paginate_by = 2
-    context_object_name = "products"
-
+class CategoryMixin:
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['categories'] = Category.objects.all()
         return context
 
 
-class ProductDetailView(DetailView):
+class ProductListView(CategoryMixin, ListView):
+    queryset = Product.objects.order_by('-created_at')
+    template_name = 'apps/product/product-list.html'
+    paginate_by = 2
+    context_object_name = "products"
+
+
+class ProductDetailView(CategoryMixin, DetailView):
     template_name = 'apps/product/product-details.html'
     context_object_name = 'product'
 
@@ -36,11 +37,6 @@ class ProductDetailView(DetailView):
     #     context = super().get_context_data(object_list=object_list, **kwargs)
     #     context['products'] = Product.objects.all()
     #     return context
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        context['categories'] = Category.objects.all()
-        return context
 
     def get_queryset(self):
         return Product.objects.all()
@@ -53,7 +49,6 @@ class RegisterCreateView(CreateView):
 
     def form_valid(self, form):
         form.save()
-        # send_to_email('Your account has been created!', form.data['email'])
         send_to_email.delay('Your account has been created!', form.data['email'])
         return super().form_valid(form)
 
@@ -61,7 +56,7 @@ class RegisterCreateView(CreateView):
         return super().form_invalid(form)
 
 
-class SettingsUpdateView(LoginRequiredMixin, UpdateView):
+class SettingsUpdateView(CategoryMixin, LoginRequiredMixin, UpdateView):
     model = get_user_model()
     queryset = model.objects.all()
     fields = 'first_name', 'last_name'
@@ -70,11 +65,6 @@ class SettingsUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset=None):
         return self.request.user
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-        context['categories'] = Category.objects.all()
-        return context
 
 
 class CustomLoginView(LoginView):
@@ -90,7 +80,7 @@ class LogoutView(View):
         return redirect('product_list')
 
 
-class CartDetailView(LoginRequiredMixin, ListView):
+class CartDetailView(CategoryMixin, LoginRequiredMixin, ListView):
     template_name = 'apps/shopping/shopping-cart.html'
     context_object_name = 'cart_view'
     success_url = reverse_lazy('shopping-cart_detail')
@@ -112,7 +102,7 @@ class CartDetailView(LoginRequiredMixin, ListView):
 
 
 # @method_decorator(require_POST, name='dispatch')
-class CartAddView(View):
+class AddToCartView(CategoryMixin, View):
     def get(self, request, pk, *args, **kwargs):
         product = get_object_or_404(Product, id=pk)
         cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
@@ -124,28 +114,35 @@ class CartAddView(View):
         return redirect('cart_detail')
 
 
-class CartRemoveView(DeleteView):
+class CartRemoveView(CategoryMixin, LoginRequiredMixin, DeleteView):
     model = CartItem
     success_url = reverse_lazy('cart_detail')
 
 
-class FavouriteView(View):
-    template_name = 'apps/shopping/favourite.html'
+class FavouriteView(CategoryMixin, ListView):
+    queryset = Favorite.objects.all()
+    template_name = 'apps/shopping/favourite_cart.html'
+    context_object_name = 'favourites'
 
-    def get(self, request, *args, **kwargs):
-        favourite_items = Favorite.objects.filter(user=request.user)
-        for item in favourite_items:
-            item.total_price = item.product.current_price
+    def get_queryset(self):
+        qs = super().get_queryset()
+        return qs.filter(user=self.request.user)
 
-        context = {
-            'favourite_items': favourite_items,
-        }
-        return render(request, self.template_name, context)
+    # def get_queryset(self):
+    # def get(self, request, *args, **kwargs):
+    #     favourite_items = Favorite.objects.filter(user=request.user)
+    #     for item in favourite_items:
+    #         item.total_price = item.product.current_price
+    #
+    #     context = {
+    #         'favourite_items': favourite_items,
+    #     }
+    #     return render(request, self.template_name, context)
 
 
-class AddToFavouriteView(View):
-    def get(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
+class AddToFavouriteView(CategoryMixin, View):
+    def get(self, request, pk, *args, **kwargs):
+        product = get_object_or_404(Product, id=pk)
         favorite, created = Favorite.objects.get_or_create(user=request.user, product=product)
 
         if not created:
@@ -154,17 +151,6 @@ class AddToFavouriteView(View):
         return redirect('favorites_page')
 
 
-# class RemoveFromFavoritesView(LoginRequiredMixin, View):
-#
-#     def get(self, request, *args, **kwargs):
-#         item_id = self.request.GET.get('item_id')
-#         if item_id:
-#             try:
-#                 cart_item = Favorite.objects.get(id=item_id, user=request.user)
-#                 cart_item.delete()
-#             except Favorite.DoesNotExist:
-#                 pass
-#         return redirect('favorites_page')
 def update_quantity(request, pk):
     if request.method == 'POST':
         product = get_object_or_404(CartItem, pk=pk)
@@ -185,7 +171,7 @@ def update_quantity(request, pk):
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
-class RemoveFromFavoritesView(LoginRequiredMixin, DeleteView):
+class RemoveFromFavoritesView(CategoryMixin, DeleteView):
     queryset = Favorite.objects.all()
     success_url = reverse_lazy('favorites_page')
 
@@ -193,12 +179,12 @@ class RemoveFromFavoritesView(LoginRequiredMixin, DeleteView):
         return super().get_queryset().filter(user=self.request.user)
 
 
-class ChekoutView(TemplateView):
+class ChekoutView(CategoryMixin, TemplateView):
     template_name = "apps/product/checkout.html"
 
 
-class NewAddressCreateView(CreateView):
-    template_name = "apps/shopping/new_addres.html"
+class NewAddressCreateView(CategoryMixin, CreateView):
+    template_name = "apps/shopping/new_address.html"
     model = Address
     fields = 'city', 'street', 'zip_code', 'phone', 'full_name'
     context_object_name = 'new_address'

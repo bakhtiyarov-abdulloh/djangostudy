@@ -1,8 +1,7 @@
 from datetime import timedelta
 
-from django.db import models
 from django.db.models import Model, ImageField, CharField, PositiveIntegerField, JSONField, DateTimeField, ForeignKey, \
-    CASCADE, CheckConstraint, Q, IntegerField, TextChoices, EmailField, TextField, DateField
+    CASCADE, CheckConstraint, Q, IntegerField, TextChoices, EmailField, TextField, DateField, SlugField
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django_ckeditor_5.fields import CKEditor5Field
@@ -12,9 +11,9 @@ from root.settings import AUTH_USER_MODEL
 
 
 class Category(MPTTModel):
-    name = models.CharField(max_length=255)
-    slug = models.SlugField(max_length=255, unique=True, editable=False)
-    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
+    name = CharField(max_length=255)
+    slug = SlugField(max_length=255, unique=True, editable=False)
+    parent = TreeForeignKey('self', CASCADE, null=True, blank=True, related_name='children')
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -31,9 +30,6 @@ class Category(MPTTModel):
     class Meta:
         verbose_name_plural = 'Categories'
         verbose_name = 'Category'
-
-    def __str__(self):
-        return self.name
 
 
 class Tag(Model):
@@ -82,11 +78,11 @@ class Product(Model):
 
 class ProductImage(Model):
     image = ImageField(upload_to='products/', null=True)
-    product = models.ForeignKey('apps.Product', models.CASCADE, related_name='images')
+    product = ForeignKey('apps.Product', CASCADE, related_name='images')
 
 
 class CartItem(Model):
-    product = ForeignKey(Product, models.CASCADE)
+    product = ForeignKey(Product, CASCADE)
     quantity = PositiveIntegerField(default=1)
     user = CharField(max_length=40)
 
@@ -98,7 +94,7 @@ class CartItem(Model):
 
 
 class Favorite(Model):
-    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = ForeignKey(AUTH_USER_MODEL, CASCADE)
     product = ForeignKey('apps.Product', CASCADE)
     created_at = DateTimeField(auto_now_add=True)
 
@@ -137,7 +133,7 @@ class Order(Model):
         COMPLETED = 'completed', 'Completed'
 
     status = CharField(max_length=25, choices=Status.choices, default=Status.PROCESSING)
-    user = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = ForeignKey(AUTH_USER_MODEL, CASCADE)
 
     updated_at = DateTimeField(auto_now=True)
     created_at = DateTimeField(auto_now_add=True)
