@@ -10,11 +10,6 @@ class User(AbstractUser):
     pass
 
 
-class CreditCard(CreatedBaseModel):
-    order = OneToOneField('apps.Order', CASCADE)
-    number = CharField(max_length=16)
-    cvv = CharField(max_length=3)
-    expire_date = DateField()
 
 
 class SiteSettings(Model):

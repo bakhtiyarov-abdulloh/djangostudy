@@ -3,7 +3,7 @@ from django.urls import path
 from apps.views import ProductListView, ProductDetailView, RegisterCreateView, LogoutView, SettingsUpdateView, \
     CustomLoginView, CartRemoveView, CartDetailView, FavouriteView, AddToFavouriteView, \
     RemoveFromFavoritesView, update_quantity, CheckoutView, NewAddressCreateView, AddToCartView, AddressUpdateView, \
-    OrderCreateView
+    OrderDetailView
 
 urlpatterns = [
     path('', ProductListView.as_view(), name='product_list'),
@@ -22,15 +22,14 @@ urlpatterns = [
     path('edit-address<int:pk>/', AddressUpdateView.as_view(), name='edit_address'),
 
     path('cart/', CartDetailView.as_view(), name='cart_detail'),
-    path('cart-add/<int:pk>/', AddToCartView.as_view(), name= 'cart_add'),
+    path('cart-add/<int:pk>/', AddToCartView.as_view(), name='cart_add'),
     path('cart-remove/<int:pk>/', CartRemoveView.as_view(), name='cart_remove'),
 
-    path('favorites', FavouriteView.as_view(), name='favorites_page'),
+    path('favorites<int:pk>', FavouriteView.as_view(), name='favorites_page'),
     path('add-to-favourite/<int:pk>/', AddToFavouriteView.as_view(), name='addfavourites_page'),
     path('update-quantity/<int:pk>/', update_quantity, name='update_quantity'),
     path('remove-favorite/<int:pk>/', RemoveFromFavoritesView.as_view(), name='favorite_remove'),
 
-    path('order-list', OrderCreateView.as_view(), name = 'order_page')
-
+    path('order-list', OrderDetailView.as_view(), name='order_list'),
 
 ]

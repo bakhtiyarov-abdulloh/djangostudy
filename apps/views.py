@@ -221,13 +221,13 @@ class AddressUpdateView(CategoryMixin, UpdateView):
 
 class OrderListView(CategoryMixin, ListView):
     model = Order
-    template_name = 'apps/orders/order_list.html'
+    template_name = 'apps/orders/order_detail.html'
     context_object_name = 'orders'
     paginate_by = 10
 
     def get(self, request, *args, **kwargs):
         if not (self.request.user.is_staff or self.request.user.is_superuser):
-            return redirect('list_view')
+            return redirect('product_list')
         return super().get(request, *args, **kwargs)
 
 
@@ -242,14 +242,14 @@ class OrderDetailView(CategoryMixin, DetailView):
 
 class OrderDeleteView(DeleteView):
     model = Order
-    success_url = reverse_lazy('orders_list')
+    success_url = reverse_lazy('order_list')
 
 
 class OrderCreateView(LoginRequiredMixin, CategoryMixin, CreateView):
     model = Order
-    template_name = 'apps/product/checkout.html'
+    template_name = 'apps/orders/order_list.html'
     form_class = OrderCreateModelForm
-    success_url = reverse_lazy('orders_list')
+    success_url = reverse_lazy('order_list')
 
     def form_valid(self, form):
         form.instance.owner = self.request.user

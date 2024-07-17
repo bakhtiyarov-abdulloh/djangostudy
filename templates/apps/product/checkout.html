@@ -123,33 +123,7 @@
                                            maxlength="5" name="expdate"/>
                                 </div>
 
-                                <script>
-                                    const inputNumber = document.getElementById('inputNumber');
-                                    const expDate = document.getElementById('expDate');
-
-                                    // Card number formatting
-                                    inputNumber.addEventListener('input', function (e) {
-                                        let value = e.target.value.replace(/\D/g, '');
-                                        let formattedValue = value.match(/.{1,4}/g)?.join(' ') || '';
-                                        e.target.value = formattedValue;
-                                    });
-
-                                    // Expiration date formatting and validation
-                                    expDate.addEventListener('input', function (e) {
-                                        let value = e.target.value.replace(/\D/g, '').substring(0, 4);
-
-                                        if (value.length >= 2) {
-                                            let month = value.substring(0, 2);
-                                            if (parseInt(month) > 12) {
-                                                month = '12';
-                                            }
-                                            value = month + '/' + value.substring(2);
-                                        }
-
-                                        e.target.value = value;
-                                    });
-                                </script>
-
+                                
 
                                 <div class="col-6">
                                     <label class="form-label ls text-uppercase text-600 fw-semi-bold mb-0">CVV<a
@@ -213,7 +187,7 @@
                             </div>
                             <button class="btn btn-success mt-3 px-5" type="submit">Confirm &amp; Pay</button>
                             <p class="fs--1 mt-3 mb-0">By clicking <strong>Confirm & Pay </strong>button you agree
-                                to the <a href="{% url 'order_page' %}">Terms &amp; Conditions</a></p>
+                                to the <a href="#!">Terms & amp; Conditions</a></p>
                         </div>
                     </div>
                 </div>

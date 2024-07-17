@@ -125,21 +125,3 @@ class Review(Model):
         return f"Review by {self.name} on {self.date_posted}"
 
 
-class Order(Model):
-    class Status(TextChoices):
-        PROCESSING = 'Processing', 'Processing'
-        ON_HOLD = 'on_hold', 'On Hold'
-        PENDING = 'pending', 'Pending'
-        COMPLETED = 'completed', 'Completed'
-
-    status = CharField(max_length=25, choices=Status.choices, default=Status.PROCESSING)
-    user = ForeignKey(AUTH_USER_MODEL, CASCADE)
-
-    updated_at = DateTimeField(auto_now=True)
-    created_at = DateTimeField(auto_now_add=True)
-
-
-class OrderItem(Model):
-    product = ForeignKey('apps.Product', CASCADE)
-    order = ForeignKey('apps.Order', CASCADE)
-    quantity = PositiveIntegerField(default=1)

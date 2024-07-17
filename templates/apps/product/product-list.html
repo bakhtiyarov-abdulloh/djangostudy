@@ -1,5 +1,8 @@
 {% extends 'apps/base.html' %}
+
 {% load static %}
+
+{% load custom_tags %}
 
 {% block content %}
     <div class="card mb-3">
@@ -90,7 +93,8 @@
                                         </div>
                                         <div class="col-lg-4 d-flex justify-content-between flex-column">
                                             <div>
-                                                <h4 class="fs-1 fs-md-2 text-warning mb-0">${{ product.current_price }}</h4>
+                                                <h4 class="fs-1 fs-md-2 text-warning mb-0">
+                                                    ${{ product.current_price }}</h4>
                                                 {% if product.discount %}
                                                     <h5 class="fs--1 text-500 mb-0 mt-1">
                                                         <del>${{ product.price }}</del>
@@ -120,15 +124,15 @@
                                             </div>
 
                                             <div class="mt-2"><a
-                                                    class="btn btn-sm btn-outline-secondary border-300 d-lg-block me-2 me-lg-0"
-                                                    href="{% url 'addfavourites_page' product.pk %}">
-                                                <span class="far fa-heart">
-                                                
-                                            </span>
-                                                <span
-                                                    class="ms-2 d-none d-md-inline-block">Favourite</span></a>
-
+                                                    class="btn btn-sm btn{% if not user|is_liked:product %}-outline{% endif %}-danger border-300"
+                                                    href="{% url 'favorites_page' product.id %}"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top"
+                                                    title="Add to Wish List">
+                                                <span class="far fa-heart me-1"></span>
+                                                {{ product.favorite_set.count }}
+                                            </a>
                                                 <a class="btn btn-sm btn-primary d-lg-block mt-lg-2" href="
+
                                                         {% if user.is_authenticated %}{% url 'cart_add' product.pk %}{% else %}{% url 'login_page' %}{% endif %}">
                                                     <span class="fas fa-cart-plus"> </span><span
                                                         class="ms-2 d-none d-md-inline-block">Add to Cart</span>
