@@ -21,36 +21,14 @@
             <a class="navbar-brand" href="{% url 'product_list' %}">
                 <div class="d-flex align-items-center py-3"><img class="me-2"
                                                                  src="{% static 'apps/assets/img/icons/spot-illustrations/falcon.png' %}"
-                                                                 alt="" width="40"/><span
-                        class="font-sans-serif">falcon</span>
+                                                                 alt="" width="40"/>
+                    <span
+                        class="font-sans-serif">abdulloh</span>
                 </div>
             </a>
         </div>
-{#        <div class="collapse navbar-collapse" id="navbarVerticalCollapse">#}
-{#            <div class="navbar-vertical-content scrollbar">#}
-{#                <ul class="navbar-nav flex-column mb-3" id="navbarVerticalNav">#}
-{#                    <li class="nav-item">#}
-{#                        {% for category in categories %}#}
-{#                            <a class="nav-link" href="{% url 'product_list' %}?category={{ category.slug }}"#}
-{#                               role="button" aria-expanded="false">#}
-{#                                <div class="d-flex align-items-center"><span class="nav-link-icon"><svg#}
-{#                                        class="svg-inline--fa fa-calendar-alt fa-w-14" aria-hidden="true"#}
-{#                                        focusable="false" data-prefix="fas" data-icon="calendar-alt" role="img"#}
-{#                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path#}
-{#                                        fill="currentColor"#}
-{#                                        d="M0 464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V192H0v272zm320-196c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM192 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40zM64 268c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zm0 128c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40c0 6.6-5.4 12-12 12H76c-6.6 0-12-5.4-12-12v-40zM400 64h-48V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H160V16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v48H48C21.5 64 0 85.5 0 112v48h448v-48c0-26.5-21.5-48-48-48z"></path></svg>#}
-{#                                    <!-- <span class="fas fa-calendar-alt"></span> Font Awesome fontawesome.com --></span><span#}
-{#                                        class="nav-link-text ps-1">{{ category.name }}</span>#}
-{#                                </div>#}
-{#                            </a>#}
-{#                        #}
-{#                        {% endfor %}#}
-{##}
-{#                    </li>#}
-{#                </ul>#}
-{#            </div>#}
-{#        </div>#}
-     {% include 'apps/parts/_sidebar.html' %}
+       
+        {% include 'apps/parts/_sidebar.html' %}
     </nav>
     <div class="content">
         <nav class="navbar navbar-light navbar-glass navbar-top navbar-expand">
@@ -224,7 +202,8 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link px-0 {% if user.cart_count %}notification-indicator{% endif %} notification-indicator-warning notification-indicator-fill fa-icon-wait"
-                       href="{% if user.is_authenticated %}{% url 'cart_detail' %}{% else %}{% url 'login_page' %}{% endif %}"><span
+                       href="
+                               {% if user.is_authenticated %}{% url 'cart_detail' %}{% else %}{% url 'login_page' %}{% endif %}"><span
                             class="fas fa-shopping-cart"
                             data-fa-transform="shrink-7"
                             style="font-size: 33px;"></span>
@@ -373,6 +352,7 @@
                                 
                                 
 
+                                
                                 
                                 
                                 

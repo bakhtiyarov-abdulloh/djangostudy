@@ -64,7 +64,7 @@ class Product(Model):
 
     @property
     def current_price(self):
-        return int(self.price - self.discount * self.price / 100)
+        return int(self.price - self.discount * self.price / 100) + self.shipping_cost
 
     @property
     def is_new(self):
@@ -89,13 +89,13 @@ class CartItem(Model):
     def __str__(self):
         return f"{self.quantity} x {self.product.name}"
 
-    def shop_total_price(self):
+    def amount(self):
         return self.product.price * self.quantity
 
 
 class Favorite(Model):
     user = ForeignKey(AUTH_USER_MODEL, CASCADE)
-    product = ForeignKey('apps.Product', CASCADE)
+    product = ForeignKey(Product, CASCADE)
     created_at = DateTimeField(auto_now_add=True)
 
     class Meta:

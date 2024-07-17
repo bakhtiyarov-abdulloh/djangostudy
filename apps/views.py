@@ -10,8 +10,8 @@ from django.urls import reverse_lazy, reverse
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, TemplateView, DeleteView, UpdateView
 
-from apps.forms import UserRegisterModelForm
-from apps.models import Product, Category, CartItem, Favorite, Address
+from apps.forms import UserRegisterModelForm, OrderCreateModelForm
+from apps.models import Product, Category, CartItem, Favorite, Address, Order
 from apps.tasks import send_to_email
 
 
@@ -114,7 +114,7 @@ class AddToCartView(CategoryMixin, View):
         return redirect('cart_detail')
 
 
-class CartRemoveView(CategoryMixin, LoginRequiredMixin, DeleteView):
+class CartRemoveView(CategoryMixin, DeleteView):
     model = CartItem
     success_url = reverse_lazy('cart_detail')
 
@@ -172,26 +172,85 @@ def update_quantity(request, pk):
 
 
 class RemoveFromFavoritesView(CategoryMixin, DeleteView):
-    queryset = Favorite.objects.all()
+    model = Favorite
     success_url = reverse_lazy('favorites_page')
 
-    def get_queryset(self):
-        return super().get_queryset().filter(user=self.request.user)
 
-
-class ChekoutView(CategoryMixin, TemplateView):
+class CheckoutView(LoginRequiredMixin, CategoryMixin, ListView):
     template_name = "apps/product/checkout.html"
+    model = CartItem
+    context_object_name = 'cart_items'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        qs = self.get_queryset()
+
+        context.update(
+            **qs.aggregate(
+                sub_total=Sum(F('quantity') * F('product__price') * (100 - F('product__discount')) / 100),
+                shipping_cost=Sum(F('product__shipping_cost')),
+                all_total=Sum((F('quantity') * F('product__price') * (100 - F('product__discount')) / 100) + F(
+                    'product__shipping_cost'))
+            )
+        )
+        context['addresses'] = Address.objects.filter(user=self.request.user)
+        return context
+
+    # def get_queryset(self):
+    #     return super().get_queryset().filter(user=self.request.user)
 
 
 class NewAddressCreateView(CategoryMixin, CreateView):
-    template_name = "apps/shopping/new_address.html"
+    template_name = "apps/address/new_address.html"
     model = Address
     fields = 'city', 'street', 'zip_code', 'phone', 'full_name'
     context_object_name = 'new_address'
+    success_url = reverse_lazy('checkout_page')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-    def get_success_url(self):
-        return reverse('new_address.html')
+
+class AddressUpdateView(CategoryMixin, UpdateView):
+    model = Address
+    template_name = 'apps/address/edit.html'
+    fields = 'city', 'street', 'phone', 'zip_code'
+    success_url = reverse_lazy('checkout_page')
+
+
+class OrderListView(CategoryMixin, ListView):
+    model = Order
+    template_name = 'apps/orders/order_list.html'
+    context_object_name = 'orders'
+    paginate_by = 10
+
+    def get(self, request, *args, **kwargs):
+        if not (self.request.user.is_staff or self.request.user.is_superuser):
+            return redirect('list_view')
+        return super().get(request, *args, **kwargs)
+
+
+class OrderDetailView(CategoryMixin, DetailView):
+    model = Order
+    template_name = 'apps/orders/order_detail.html'
+    context_object_name = 'order'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(owner=self.request.user)
+
+
+class OrderDeleteView(DeleteView):
+    model = Order
+    success_url = reverse_lazy('orders_list')
+
+
+class OrderCreateView(LoginRequiredMixin, CategoryMixin, CreateView):
+    model = Order
+    template_name = 'apps/product/checkout.html'
+    form_class = OrderCreateModelForm
+    success_url = reverse_lazy('orders_list')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
