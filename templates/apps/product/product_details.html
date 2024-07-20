@@ -88,7 +88,7 @@
 
                             <div class="col-auto px-0">
                                 <a class="btn btn-sm btn{% if not user|is_liked:product %}-outline{% endif %}-danger border-300"
-                                   href="{% url 'favorites_page' product.id %}"
+                                   href="{% url 'addfavourites_page' product.pk %}"
                                    data-bs-toggle="tooltip" data-bs-placement="top"
                                    title="Add to Wish List">
                                     <span class="far fa-heart me-1"></span>
@@ -137,7 +137,7 @@
                              aria-labelledby="specifications-tab">
                             <table class="table fs--1 mt-3">
                                 <tbody>
-                                {% for key, value in product.specification.items %}
+                                {% for key, value in product.specifications.items %}
                                     <tr>
                                         <td class="bg-100" style="width: 30%;">{{ key }}</td>
                                         <td>{{ value }}</td>

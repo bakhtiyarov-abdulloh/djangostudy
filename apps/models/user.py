@@ -1,13 +1,16 @@
 from django.contrib.auth.models import AbstractUser
-from django.db.models import Model, CharField, PositiveSmallIntegerField, ForeignKey, CASCADE, DateField, OneToOneField, \
-    PositiveIntegerField
-from django.urls import reverse
+from django.db.models import Model, CharField, PositiveSmallIntegerField, ForeignKey, CASCADE, PositiveIntegerField
 
 from apps.models.base import CreatedBaseModel
 
 
 class User(AbstractUser):
-    pass
+    @property
+    def cart_count(self):
+        return self.cartitem_set.count()
+
+    def favourite_count(self):
+        return self.favourite_set.count()
 
 
 

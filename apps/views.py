@@ -1,14 +1,12 @@
-from dataclasses import field
-
 from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db.models import Sum, F
 from django.http import JsonResponse
-from django.shortcuts import redirect, get_object_or_404, render
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, TemplateView, DeleteView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
 from apps.forms import UserRegisterModelForm, OrderCreateModelForm
 from apps.models import Product, Category, CartItem, Favorite, Address, Order
@@ -24,13 +22,13 @@ class CategoryMixin:
 
 class ProductListView(CategoryMixin, ListView):
     queryset = Product.objects.order_by('-created_at')
-    template_name = 'apps/product/product-list.html'
+    template_name = 'apps/product/product_list.html'
     paginate_by = 2
     context_object_name = "products"
 
 
 class ProductDetailView(CategoryMixin, DetailView):
-    template_name = 'apps/product/product-details.html'
+    template_name = 'apps/product/product_details.html'
     context_object_name = 'product'
 
     # def get_context_data(self, *, object_list=None, **kwargs):
@@ -119,36 +117,29 @@ class CartRemoveView(CategoryMixin, DeleteView):
     success_url = reverse_lazy('cart_detail')
 
 
+
 class FavouriteView(CategoryMixin, ListView):
     queryset = Favorite.objects.all()
     template_name = 'apps/shopping/favourite_cart.html'
     context_object_name = 'favourites'
 
+
     def get_queryset(self):
-        qs = super().get_queryset()
-        return qs.filter(user=self.request.user)
-
-    # def get_queryset(self):
-    # def get(self, request, *args, **kwargs):
-    #     favourite_items = Favorite.objects.filter(user=request.user)
-    #     for item in favourite_items:
-    #         item.total_price = item.product.current_price
-    #
-    #     context = {
-    #         'favourite_items': favourite_items,
-    #     }
-    #     return render(request, self.template_name, context)
+        return Favorite.objects.filter(product__favorite__user=self.request.user)
 
 
-class AddToFavouriteView(CategoryMixin, View):
+
+
+class AddToFavouriteView(LoginRequiredMixin, CategoryMixin, View):
     def get(self, request, pk, *args, **kwargs):
-        product = get_object_or_404(Product, id=pk)
-        favorite, created = Favorite.objects.get_or_create(user=request.user, product=product)
-
+        obj, created = Favorite.objects.get_or_create(user=request.user, product_id=pk)
         if not created:
-            product.is_favorited_by_user = True
-            product.save()
-        return redirect('favorites_page')
+            obj.delete()
+        referer = request.META.get('HTTP_REFERER')
+        if referer:
+            return redirect(referer)
+        else:
+            return redirect('product_detail', pk=pk)
 
 
 def update_quantity(request, pk):
@@ -177,7 +168,7 @@ class RemoveFromFavoritesView(CategoryMixin, DeleteView):
 
 
 class CheckoutView(LoginRequiredMixin, CategoryMixin, ListView):
-    template_name = "apps/product/checkout.html"
+    template_name = "apps/shopping/checkout.html"
     model = CartItem
     context_object_name = 'cart_items'
 
@@ -221,14 +212,14 @@ class AddressUpdateView(CategoryMixin, UpdateView):
 
 class OrderListView(CategoryMixin, ListView):
     model = Order
-    template_name = 'apps/orders/order_detail.html'
+    template_name = 'apps/orders/order_list.html'
     context_object_name = 'orders'
     paginate_by = 10
 
-    def get(self, request, *args, **kwargs):
-        if not (self.request.user.is_staff or self.request.user.is_superuser):
-            return redirect('product_list')
-        return super().get(request, *args, **kwargs)
+    def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return super().get_queryset()
+        return super().get_queryset().filter(owner=self.request.user)
 
 
 class OrderDetailView(CategoryMixin, DetailView):
@@ -237,6 +228,8 @@ class OrderDetailView(CategoryMixin, DetailView):
     context_object_name = 'order'
 
     def get_queryset(self):
+        if self.request.user.is_staff or self.request.user.is_superuser:
+            return super().get_queryset()
         return super().get_queryset().filter(owner=self.request.user)
 
 
@@ -247,7 +240,7 @@ class OrderDeleteView(DeleteView):
 
 class OrderCreateView(LoginRequiredMixin, CategoryMixin, CreateView):
     model = Order
-    template_name = 'apps/orders/order_list.html'
+    template_name = 'apps/shopping/checkout.html'
     form_class = OrderCreateModelForm
     success_url = reverse_lazy('order_list')
 

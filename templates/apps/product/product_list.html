@@ -82,12 +82,14 @@
                                                                              href="{% url 'product_list' %}?category={{ product.category.slug }}">{{ product.category }}</a>
                                             </p>
                                             <ul class="list-unstyled d-none d-lg-block">
-                                                {% for value in product.first_spec %}
-                                                    <li>
+                                                {% for value in product.specifications.values  %}
+                                                    {% if forloop.counter <= 5 %}
+                                                         <li>
                                                         <span class="fas fa-circle"
                                                               data-fa-transform="shrink-12"></span>
                                                         <span>{{ value }}</span>
                                                     </li>
+                                                    {% endif %}
                                                 {% endfor %}
                                             </ul>
                                         </div>
@@ -125,7 +127,7 @@
 
                                             <div class="mt-2"><a
                                                     class="btn btn-sm btn{% if not user|is_liked:product %}-outline{% endif %}-danger border-300"
-                                                    href="{% url 'favorites_page' product.id %}"
+                                                    href="{% url 'addfavourites_page' product.pk %}"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="Add to Wish List">
                                                 <span class="far fa-heart me-1"></span>

@@ -41,11 +41,11 @@ class Tag(Model):
 
 class Product(Model):
     name = CharField(max_length=255)
-    discount = PositiveIntegerField(default=0, null=True, blank=True)
+    discount = PositiveIntegerField(default = 0, db_default=0)
     price = IntegerField()
     quantity = PositiveIntegerField()
     shipping_cost = PositiveIntegerField()
-    short_description = CKEditor5Field('Short description', config_name='extends')
+    short_description = CKEditor5Field()
     description = CKEditor5Field()
     specifications = JSONField()
     created_at = DateTimeField(auto_now_add=True)
@@ -84,22 +84,25 @@ class ProductImage(Model):
 class CartItem(Model):
     product = ForeignKey(Product, CASCADE)
     quantity = PositiveIntegerField(default=1)
-    user = CharField(max_length=40)
+    user = ForeignKey('apps.User',CASCADE)
 
     def __str__(self):
-        return f"{self.quantity} x {self.product.name}"
-
+        return self.product.name
+    @property
     def amount(self):
         return self.product.price * self.quantity
 
 
 class Favorite(Model):
-    user = ForeignKey(AUTH_USER_MODEL, CASCADE)
+    user = ForeignKey("apps.User", CASCADE)
     product = ForeignKey(Product, CASCADE)
     created_at = DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = ('user', 'product')
+
+    def __str__(self):
+        return self.product.name
 
 
 class Review(Model):

@@ -10,6 +10,13 @@ beat:
 
 dumpdata:
 	python3 manage.py dumpdata --indent=2 apps.Category > categories.json
+	python3 manage.py dumpdata --indent=2 apps.Product > products.json
+	python3 manage.py dumpdata --indent=2 apps.User > users.json
 
 loaddata:
 	python3 manage.py loaddata categories
+	python3 manage.py loaddata products
+	python3 manage.py loaddata users
+
+
+

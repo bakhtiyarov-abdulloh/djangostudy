@@ -23,11 +23,11 @@
                                                                  src="{% static 'apps/assets/img/icons/spot-illustrations/falcon.png' %}"
                                                                  alt="" width="40"/>
                     <span
-                        class="font-sans-serif">abdulloh</span>
+                            class="font-sans-serif">abdulloh</span>
                 </div>
             </a>
         </div>
-       
+
         {% include 'apps/parts/_sidebar.html' %}
     </nav>
     <div class="content">
@@ -203,11 +203,24 @@
                 <li class="nav-item">
                     <a class="nav-link px-0 {% if user.cart_count %}notification-indicator{% endif %} notification-indicator-warning notification-indicator-fill fa-icon-wait"
                        href="
+                               
                                {% if user.is_authenticated %}{% url 'cart_detail' %}{% else %}{% url 'login_page' %}{% endif %}"><span
                             class="fas fa-shopping-cart"
                             data-fa-transform="shrink-7"
                             style="font-size: 33px;"></span>
                         <span class="notification-indicator-number">{{ user.cart_count }}</span>
+                    </a>
+
+                </li>
+                <li class="nav-item">
+                
+                    <a class="nav-link px-0 {% if user.cart_count %}notification-indicator{% endif %} notification-indicator-warning notification-indicator-fill fa-icon-wait"
+                       href="
+                               
+                               
+                               {% if user.is_authenticated %}{% url 'favorites_page' %}{% else %}{% url 'login_page' %}{% endif %}"><img
+                            src="https://img.icons8.com/?size=100&id=10287&format=png&color=737373" alt="" style="width: 25px">
+                        <span class="notification-indicator-number">{{ user.favourite_count}}</span>
                     </a>
 
                 </li>
@@ -223,7 +236,7 @@
                         <div class="card card-notification shadow-none">
                             <div class="card-header">
                                 <div class="row justify-content-between align-items-center">
-                                    <div class="col-auto">
+                                    <div class="col-auto">3
                                         <h6 class="card-header-title mb-0">Notifications</h6>
                                     </div>
                                     <div class="col-auto ps-0 ps-sm-3"><a class="card-link fw-normal" href="#">Mark
@@ -352,6 +365,7 @@
                                 
                                 
 
+                                
                                 
                                 
                                 

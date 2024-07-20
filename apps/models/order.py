@@ -1,5 +1,5 @@
 from django.db.models import Model, CharField, ForeignKey, CASCADE, TextChoices, PositiveIntegerField, OneToOneField, \
-    DateField
+    DateField, Sum, F
 
 from apps.models.base import CreatedBaseModel
 
@@ -19,6 +19,13 @@ class Order(CreatedBaseModel):
     status = CharField(max_length=25, choices=Status.choices, default=Status.PROCESSING)
     address = ForeignKey('apps.Address', CASCADE, related_name='orders')
     owner = ForeignKey('apps.User', CASCADE, related_name='orders')
+
+    @property
+    def total(self):
+        return self.order_items.aggregate(
+            total=Sum((F('quantity') * F('product__price') * (100 - F('product__discount')) / 100) + F(
+                'product__shipping_cost'))
+        )
 
 
 class OrderItem(Model):
