@@ -100,7 +100,7 @@
                                         data-fa-transform="shrink-2"></span></span>
                                 </td>
                             {% endif %}
-                            <td class="amount py-2 align-middle text-end fs-0 fw-medium">${{ order.total.total }}</td>
+                            <td class="amount py-2 align-middle text-end fs-0 fw-medium">${{ order.total.total|default_if_none:0 }}</td>
                             <td class="py-2 align-middle white-space-nowrap text-end">
                                 <div class="dropdown font-sans-serif position-static">
                                     <button class="btn btn-link text-600 btn-sm dropdown-toggle btn-reveal"

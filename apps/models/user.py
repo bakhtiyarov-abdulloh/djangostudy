@@ -9,10 +9,9 @@ class User(AbstractUser):
     def cart_count(self):
         return self.cartitem_set.count()
 
+    @property
     def favourite_count(self):
-        return self.favourite_set.count()
-
-
+        return self.favorite_set.count()
 
 
 class SiteSettings(Model):

@@ -2,14 +2,16 @@ from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db.models import Sum, F
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 
 from apps.forms import UserRegisterModelForm, OrderCreateModelForm
-from apps.models import Product, Category, CartItem, Favorite, Address, Order
+from apps.generate_pdf import make_pdf
+from apps.models import Product, Category, CartItem, Favorite, Address, Order, OrderItem
+from apps.models.user import SiteSettings
 from apps.tasks import send_to_email
 
 
@@ -230,8 +232,22 @@ class OrderDetailView(CategoryMixin, DetailView):
     def get_queryset(self):
         if self.request.user.is_staff or self.request.user.is_superuser:
             return super().get_queryset()
+
         return super().get_queryset().filter(owner=self.request.user)
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        qs = OrderItem.objects.filter(order_id=context['order'].id)
+
+        context.update(
+            **qs.aggregate(
+                subtotal=Sum(F('quantity') * (F('product__price') * (
+                        100 - F('product__discount')) / 100)),
+                shipping_cost=Sum(F('product__shipping_cost'))
+            )
+        )
+        context['tax'] = SiteSettings.objects.first().tax
+        return context
 
 class OrderDeleteView(DeleteView):
     model = Order
@@ -247,3 +263,12 @@ class OrderCreateView(LoginRequiredMixin, CategoryMixin, CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         return super().form_valid(form)
+
+
+class OrderPdfCreateView(View):
+    def get(self, request, pk, *args, **kwargs):
+        order = get_object_or_404(Order, pk=pk)
+        if not order.pdf_file:
+            make_pdf(order)
+        # return FileResponse(order.pdf_file.open(), as_attachment=True)
+        return FileResponse(order.pdf_file, as_attachment=True)

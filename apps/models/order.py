@@ -1,12 +1,12 @@
-from django.db.models import Model, CharField, ForeignKey, CASCADE, TextChoices, PositiveIntegerField, OneToOneField, \
-    DateField, Sum, F
+from django.db.models import Model, CharField, ForeignKey, CASCADE, TextChoices, PositiveIntegerField, DateField, Sum, \
+    F, FileField
 
 from apps.models.base import CreatedBaseModel
 
 
 class Order(CreatedBaseModel):
     class Status(TextChoices):
-        PROCESSING = 'Processing', 'Processing'
+        PROCESSING = 'processing', 'Processing'
         ON_HOLD = 'on_hold', 'On Hold'
         PENDING = 'pending', 'Pending'
         COMPLETED = 'completed', 'Completed'
@@ -19,6 +19,7 @@ class Order(CreatedBaseModel):
     status = CharField(max_length=25, choices=Status.choices, default=Status.PROCESSING)
     address = ForeignKey('apps.Address', CASCADE, related_name='orders')
     owner = ForeignKey('apps.User', CASCADE, related_name='orders')
+    pdf_file = FileField(upload_to='order/pdf/', null=True, blank=True)
 
     @property
     def total(self):
@@ -33,6 +34,9 @@ class OrderItem(Model):
     order = ForeignKey('apps.Order', CASCADE, related_name='order_items')
     quantity = PositiveIntegerField()
 
+    @property
+    def amount(self):
+        return self.quantity * self.product.current_price
 
 class CreditCard(CreatedBaseModel):
     order = ForeignKey('apps.Order', CASCADE)
