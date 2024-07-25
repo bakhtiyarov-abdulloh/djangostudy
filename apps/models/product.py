@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.db.models import Model, ImageField, CharField, PositiveIntegerField, JSONField, DateTimeField, ForeignKey, \
-    CASCADE, CheckConstraint, Q, IntegerField, TextChoices, EmailField, TextField, DateField, SlugField
+    CASCADE, CheckConstraint, Q, IntegerField, TextChoices, EmailField, TextField, DateField, SlugField, IntegerChoices
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django_ckeditor_5.fields import CKEditor5Field
@@ -106,19 +106,18 @@ class Favorite(Model):
 
 
 class Review(Model):
-    RATINGS = (
-        (1, '1 star'),
-        (1.5, '1.5 star'),
-        (2, '2 stars'),
-        (2.5, '2.5 stars'),
-        (3, '3 stars'),
-        (3.5, ' 3.5 stars'),
-        (4, '4 stars'),
-        (4.5, '4.5 stars'),
-        (5, '5 stars'),
-    )
+    class Rating(IntegerChoices):
+            (1, '1 star'),
+            (1.5, '1.5 star'),
+            (2, '2 stars'),
+            (2.5, '2.5 stars'),
+            (3, '3 stars'),
+            (3.5, ' 3.5 stars'),
+            (4, '4 stars'),
+            (4.5, '4.5 stars'),
+            (5, '5 stars'),
     product = ForeignKey(Product, CASCADE, related_name='reviews')
-    rating = IntegerField(choices=RATINGS)
+    rating = IntegerField(choices=Rating.choices)
     name = CharField(max_length=255)
     email = EmailField()
     review_text = TextField()

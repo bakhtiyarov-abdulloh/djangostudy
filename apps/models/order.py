@@ -42,5 +42,5 @@ class CreditCard(CreatedBaseModel):
     order = ForeignKey('apps.Order', CASCADE)
     number = CharField(max_length=16)
     cvv = CharField(max_length=3)
-    expire_date = DateField()
+    expire_date = DateField(null=True,blank=True)
     owner = ForeignKey('apps.User', CASCADE)

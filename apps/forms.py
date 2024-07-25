@@ -43,11 +43,16 @@ class OrderCreateModelForm(ModelForm):
         obj: Order = super().save(commit)
 
         if commit and obj.payment_method == 'credit_card':
-            # cvv = self.data.pop('cvv')
-            # expire_date = self.data.pop('expire_date')
-            # number = self.data.pop('number')
+            cvv = self.data.pop('cvv')
+            expire_date = self.data.pop('expire_date')
+            number = self.data.pop('number')
             CreditCard.objects.create(
                 owner=obj.owner,
                 order=obj
+                
             )
         return obj
+class CreditCardForm(ModelForm):
+    class Meta:
+        model = CreditCard
+        fields = ['expire_date', 'other_fields']
