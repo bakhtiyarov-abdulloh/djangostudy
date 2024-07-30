@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.telegram'
+    'allauth.socialaccount.providers.telegram',
+    'django_recaptcha'
 ]
 
 
@@ -63,6 +64,18 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://2a47-178-218-201-17.ngrok-free.app',
+    # Add other trusted origins here
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
 
 ROOT_URLCONF = 'root.urls'
 
@@ -250,18 +263,44 @@ EMAIL_HOST_PASSWORD = 'wzsa lnvm gzgh mqbv'
 
 
 CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-CELERY_RESULT_BACKEND = 'django-db'
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
             'profile',
             'email'
+        ]
+    },
+    'facebook': {
+        'METHOD': 'oauth2',  # Set to 'js_sdk' to use the Facebook connect SDK
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'name',
+            'picture',
+            'short_name',
+            'email'
         ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-
+        'VERSION': 'v20.0',
+        'GRAPH_API_URL': 'https://graph.facebook.com/v20.0',
     },
     'telegram': {
+    },
+    'github': {
+        'SCOPE': [
+            'user',
+            'repo',
+            'read:org',
+            'email'
+        ],
     }
 }
+
+LOGIN_REDIRECT_URL = '/'
+
+RECAPTCHA_PUBLIC_KEY = '6LfrbBsqAAAAAJAc9_BHMAJmo3TtUCLKX8ALcnck'
+RECAPTCHA_PRIVATE_KEY = '6LfrbBsqAAAAAGZ6SdPjJCyE_OQyElhfN17zpKZe'

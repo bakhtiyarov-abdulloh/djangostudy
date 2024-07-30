@@ -36,3 +36,4 @@ class TagModelAdmin(ImportExportActionModelAdmin):
 @register(SiteSettings)
 class SiteSettingsModelAdmin(ModelAdmin):
     pass
+

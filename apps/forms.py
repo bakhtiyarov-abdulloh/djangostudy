@@ -1,13 +1,15 @@
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm, CharField, ModelChoiceField, Form, IntegerField
+from django_recaptcha.fields import ReCaptchaField
 
 from apps.models import User, Address
+from apps.models.order import Order, CreditCard
 
-from apps.models.order import OrderItem, Order, CreditCard
 
-
-class UserRegisterModelForm(ModelForm):
+class UserRegisterModelForm(AuthenticationForm, ModelForm):
     password2 = CharField(max_length=128)
+    captcha = ReCaptchaField()
 
     class Meta:
         model = User
@@ -55,4 +57,7 @@ class OrderCreateModelForm(ModelForm):
 class CreditCardForm(ModelForm):
     class Meta:
         model = CreditCard
-        fields = ['expire_date', 'other_fields']
+        fields = ['expire_date', 'cvv', 'number']
+
+    # class CaptchaTestForm(Form):
+    #     myfield = AnyOtherField()
